@@ -1,0 +1,9 @@
+*.sqlite3
+*.pyc
+migration_workspace/
+.idea/
+__pycache__/
+*.pyc
+migration_workspace/
+.idea/
+.envs
