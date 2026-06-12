@@ -19,7 +19,7 @@ project_id = 'legacy_ford_081519'
 date_today = datetime.datetime.now().strftime("%Y-%m-%d")
 
 response = ES.search(
-	index='vehicles1',
+	index='vehicles2_v9',
 	body={
 		"size": 500,
 		"query": {

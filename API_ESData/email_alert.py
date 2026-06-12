@@ -34,8 +34,8 @@ class email_alert_EZ360:
         body_html = """<html>
                             <head></head>
                             <body>
-                              <h1>System Failure Warning</h1>
-                              <p>%s</p>
+                                <h1>System Failure Warning</h1>
+                                <p>%s</p>
                             </body>
                             </html>
             """ % message

@@ -33,7 +33,7 @@ load_dotenv()
 
 ES_SECURE_ENDPOINT = os.getenv("ES_SECURE_ENDPOINT")
 
-ES = Elasticsearch(
+ES9 = Elasticsearch(
     ES_SECURE_ENDPOINT
 )
 
