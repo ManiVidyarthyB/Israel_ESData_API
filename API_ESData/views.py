@@ -32,15 +32,17 @@ import os
 load_dotenv()
 
 ES_SECURE_ENDPOINT = os.getenv("ES_SECURE_ENDPOINT")
+ELASTIC_API_KEY = os.getenv("ELASTIC_API_KEY")
 
 ES9 = Elasticsearch(
-    ES_SECURE_ENDPOINT
+    ES_SECURE_ENDPOINT,
+    api_key=ELASTIC_API_KEY,
+    verify_certs=False,
+    request_timeout=300,
 )
-
 
 BASE_iVanaInteriorUrl = 'https://ivana.sister.tv/models/interior360/index.html?'
 BASE_exterior360Url = 'https://ivana.sister.tv/models/exterior360_msk/index.html?'
-
 
 def removeNonAscii(origin_string):
 	if not origin_string:
@@ -53,7 +55,6 @@ def removeNonAscii(origin_string):
 def checkIfRollingHillDealer(project_id):
 	return project_id == "rollinghill_honda_01042020" or project_id == "rollinghill_nissan_01042020" or \
 		   project_id == "rollinghill_toyota_01042020" or project_id == "rollinghill_used_01042020"
-
 
 def pic2ThumbNail(pic_list, height=400):
 
@@ -918,7 +919,7 @@ class GetInterior(views.APIView):
 			return Response('Please Enter VIN', status=status.HTTP_400_BAD_REQUEST)
 		elif not project_id:
 			try:
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query" : {
@@ -982,11 +983,11 @@ class GetInterior(views.APIView):
 					status=status.HTTP_400_BAD_REQUEST
 				)
 			try:
-				# vehicle_doc = ES.search(index=ES_VEHICLE_INDEX, 
+				# vehicle_doc = ES9.search(index=ES_VEHICLE_INDEX, 
 				# 						q="vin:{} AND library_id:{} AND expire_on:[{} TO *]".format(
 				# 							vin.lower(), library_id, date_today)
 				# 						)['hits']['hits'][0]['_source']
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query" :{
@@ -1048,7 +1049,7 @@ class GetInterior(views.APIView):
 				return Response(f'KBB Getting Interior Failed: {e}', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 		elif project_id == "rollinghill_01042020":
 			try:
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -1149,7 +1150,6 @@ class GetInterior(views.APIView):
 		else:
 			return Response('No Interior Found', status=status.HTTP_404_NOT_FOUND)
 
-
 class GetExterior(views.APIView):
 	def post(self, request):
 
@@ -1173,7 +1173,7 @@ class GetExterior(views.APIView):
 			return Response('Please Enter VIN', status=status.HTTP_400_BAD_REQUEST)
 		elif not project_id:
 			try:
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -1230,12 +1230,12 @@ class GetExterior(views.APIView):
 						'Please Enter Library ID',
 						status=status.HTTP_400_BAD_REQUEST
 					)
-				# vehicle_doc = ES.search(
+				# vehicle_doc = ES9.search(
 				# 	index=ES_VEHICLE_INDEX,
 				# 	
 				# 	q="vin:{} AND library_id:{} AND expire_on:[{} TO *]".format(
 				# 							vin.lower(), library_id, date_today))['hits']['hits'][0]['_source']
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -1288,7 +1288,7 @@ class GetExterior(views.APIView):
 				return Response(f'KBB Getting Exterior360 Failed: {e}', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 		elif project_id == "rollinghill_01042020":
 			try:
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -1388,7 +1388,6 @@ class GetExterior(views.APIView):
 		else:
 			return Response('No Exterior360 Found', status=status.HTTP_404_NOT_FOUND)
 
-
 # Unused
 class GetDetailPics(views.APIView):
 	def post(self, request):
@@ -1448,7 +1447,7 @@ class GetDetailPics(views.APIView):
 						}
 					})
 
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -1495,7 +1494,7 @@ class GetDetailPics(views.APIView):
 						}
 					})
 
-				vehicle_doc = ES.search(
+				vehicle_doc = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -1572,7 +1571,6 @@ class GetDetailPics(views.APIView):
 			return Response(result, status=status.HTTP_200_OK)
 		else:
 			return Response('No Details or Recently Changed Details Found', status=status.HTTP_404_NOT_FOUND)
-
 
 class GetDisplayPics(views.APIView):
 
@@ -1667,7 +1665,7 @@ class GetDisplayPics(views.APIView):
 						status=status.HTTP_400_BAD_REQUEST
 					)
 
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -1730,7 +1728,7 @@ class GetDisplayPics(views.APIView):
 
 			try:
 
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -2024,7 +2022,7 @@ class GetDisplayPics2(views.APIView):
 						status=status.HTTP_400_BAD_REQUEST
 					)
 
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -2087,7 +2085,7 @@ class GetDisplayPics2(views.APIView):
 
 			try:
 
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -2313,6 +2311,7 @@ class GetProjectDisplayPics(views.APIView):
 			)
 
 			resp = get_display_pics.get_display_pics()
+		
 
 			return Response(
 				resp,
@@ -2438,7 +2437,6 @@ class GetDisplayPicsWithCustomHeight(views.APIView):
 				f'Getting Project Display Pics Failed: {e}',
 				status=status.HTTP_500_INTERNAL_SERVER_ERROR
 			)
-		
 
 class GetProjectVehicleInfo(views.APIView):
 
@@ -2466,7 +2464,7 @@ class GetProjectVehicleInfo(views.APIView):
 			)
 
 			resp = get_display_pics.get_vehicles_attributes()
-
+			
 			return Response(
 				resp,
 				status=status.HTTP_200_OK
@@ -2478,7 +2476,6 @@ class GetProjectVehicleInfo(views.APIView):
 				f'Getting Project Vehicle Info Failed: {e}',
 				status=status.HTTP_500_INTERNAL_SERVER_ERROR
 			)
-		
 
 class GetPicsPlayer(views.APIView):
 
@@ -2524,7 +2521,7 @@ class GetPicsPlayer(views.APIView):
 						status=status.HTTP_400_BAD_REQUEST
 					)
 
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -2577,7 +2574,7 @@ class GetPicsPlayer(views.APIView):
 
 			try:
 
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -2675,7 +2672,7 @@ class GetVideos(views.APIView):
 				library_id = request_body.get('library_id')
 				# library_id = "10011020061817"
 				library_id = removeNonAscii(library_id)
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -2721,8 +2718,8 @@ class GetVideos(views.APIView):
 				return Response(f'KBB Getting Video Failed: {e}', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 		elif project_id == "rollinghill_01042020":
 			try:
-				# vehicle_doc = ES.search(index=ES_VEHICLE_INDEX,  q=f"vin:{vin}")
-				response = ES.search(
+				# vehicle_doc = ES9.search(index=ES_VEHICLE_INDEX,  q=f"vin:{vin}")
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -2805,7 +2802,6 @@ class GetVideos(views.APIView):
 		else:
 			return Response('No Video Found', status=status.HTTP_404_NOT_FOUND)
 
-
 class GetThumbnailPicsTest(views.APIView):
 
 	def post(self, request):
@@ -2850,7 +2846,7 @@ class GetThumbnailPicsTest(views.APIView):
 
 				library_id = removeNonAscii(library_id)
 
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"size": ES_MAX_RESULT_SIZE,
@@ -2910,7 +2906,7 @@ class GetThumbnailPicsTest(views.APIView):
 
 			try:
 
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -3112,7 +3108,7 @@ class GetThumbnailPics(views.APIView):
 
 				library_id = removeNonAscii(library_id)
 
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"size": ES_MAX_RESULT_SIZE,
@@ -3161,7 +3157,7 @@ class GetThumbnailPics(views.APIView):
 
 			try:
 
-				response = ES.search(
+				response = ES9.search(
 					index=ES_VEHICLE_INDEX,
 					body={
 						"query": {
@@ -3406,8 +3402,8 @@ class ProjectData:
 						"project_id.keyword": self.project_id
 					}
 				})
-
-			vehicle_docs = ES.search(
+				
+			vehicle_docs = ES9.search(
 				index=ES_VEHICLE_INDEX,
 				body={
 					"size": ES_MAX_RESULT_SIZE,
@@ -3457,7 +3453,7 @@ class ProjectData:
 
 		try:
 
-			vehicle_docs = ES.search(
+			vehicle_docs = ES9.search(
 				index=ES_VEHICLE_INDEX,
 				body={
 					"size": ES_MAX_RESULT_SIZE,
@@ -3562,7 +3558,6 @@ class ProjectData:
 
 		return res
 
-
 class ProjectDataCustom:
 
 	def __init__(self, project_id, height, pic_type='display_pics'):
@@ -3581,7 +3576,7 @@ class ProjectDataCustom:
 
 		try:
 
-			vehicle_docs = ES.search(
+			vehicle_docs = ES9.search(
 				index=ES_VEHICLE_INDEX,
 				body={
 					"size": ES_MAX_RESULT_SIZE,
@@ -3641,7 +3636,6 @@ class ProjectDataCustom:
 			)
 
 		return res
-	
 
 class GetBGREDPics(views.APIView):
 	def get(self, request):
@@ -3658,7 +3652,7 @@ class GetBGREDPics(views.APIView):
 					if library_id:
 						library_id = removeNonAscii(library_id)
 
-						response = ES.search(
+						response = ES9.search(
 							index=ES_VEHICLE_INDEX,
 							body={
 								"query": {

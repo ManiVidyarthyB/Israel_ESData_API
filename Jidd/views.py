@@ -43,7 +43,6 @@ def checkIfRollingHillDealer(project_id):
 	return project_id == "rollinghill_honda_01042020" or project_id == "rollinghill_nissan_01042020" or \
 		   project_id == "rollinghill_toyota_01042020" or project_id == "rollinghill_used_01042020"
 
-
 class GetPlayer(views.APIView):
 	def post(self, request):
 		request_body = request.data
@@ -228,7 +227,6 @@ class GetPlayer(views.APIView):
 
 				except Exception as e:
 					return Response(f'Getting Player Failed: {e}.', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class GetAll(views.APIView):
 	def post(self, request):
@@ -448,7 +446,6 @@ class GetAll(views.APIView):
 							# f'ID: {vehicle_id}. Line: {exc_tb.tb_lineno}. Error:{e}')
 			return Response(f'Getting Display Pictures Failed: {e}', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 		return Response(result_json, status=status.HTTP_200_OK)
-
 
 class GetInterior(views.APIView):
 
@@ -697,7 +694,6 @@ class GetInterior(views.APIView):
 			return Response(result, status=status.HTTP_200_OK)
 		else:
 			return Response('No Interior Found', status=status.HTTP_404_NOT_FOUND)
-
 
 class GetExterior(views.APIView):
 	def post(self, request):
@@ -949,7 +945,6 @@ class GetExterior(views.APIView):
 		else:
 			return Response('No Exterior360 Found', status=status.HTTP_404_NOT_FOUND)
 
-
 # Unused
 class GetDetailPics(views.APIView):
 	def post(self, request):
@@ -1094,7 +1089,6 @@ class GetDetailPics(views.APIView):
 			return Response(result, status=status.HTTP_200_OK)
 		else:
 			return Response('No Details Found', status=status.HTTP_404_NOT_FOUND)
-
 
 class GetDisplayPics(views.APIView):
 	def post(self, request):
@@ -1252,7 +1246,6 @@ class GetDisplayPics(views.APIView):
 		# else:
 		# 	return Response('No Display Pictures Found', status=status.HTTP_404_NOT_FOUND)
 
-
 class GetPicsPlayer(views.APIView):
 	def post(self, request):
 		request_body = request.data
@@ -1389,7 +1382,6 @@ class GetPicsPlayer(views.APIView):
 			).format(project_id, vin)
 		result.append(playerUrl)
 		return Response(result, status=status.HTTP_200_OK)
-
 
 class GetVideos(views.APIView):
 	def post(self, request):
