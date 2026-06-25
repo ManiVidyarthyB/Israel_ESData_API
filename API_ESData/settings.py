@@ -24,7 +24,12 @@ SECRET_KEY = '1(!y5s^-+*c2u45gcir9)e7m=k80l6f0&)a!f7c!_y7q(^v^1%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'data.sister.tv']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'data.sister.tv','ndata.sister.tv']
+
+CSRF_TRUSTED_ORIGINS= [
+"https://ndata.sister.tv",
+]
+SECURE_PROXY_SSL_HEADER= ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
