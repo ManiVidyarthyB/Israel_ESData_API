@@ -3456,7 +3456,7 @@ class ProjectData:
 			vehicle_docs = ES9.search(
 				index=ES_VEHICLE_INDEX,
 				body={
-					"size": ES_MAX_RESULT_SIZE,
+					"size": 10,
 					"query": {
 						"bool": {
 							"must": [
